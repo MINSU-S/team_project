@@ -49,12 +49,19 @@ select * from 일자리만족도;
 select * from 임금만족도;
 select * from 고용률;
 
-alter table suicide_rate
-ADD CONSTRAINT LOC_ID PRIMARY KEY(LOCATION);
-alter table 국가식별번호
-add constraint LOC_ID2 primary key (LOCATION);
-alter table suicide_rate
-add constraint LOC_ID3 foreign key (LOCATION) references 국가식별번호(LOCATION);
+# 기본키, 외래키 설정하기
+
+# 참조할 테이블 기본키 설정 : 실제 입력시 [] 생략 / ''필요없음
+-- alter table [참조할 테이블명]
+-- add constraint [LOC_ID] primary key ([키 컬럼명]);
+
+# 사용할 테이블 기본키 설정
+-- alter table [사용할 테이블명]
+-- ADD CONSTRAINT [LOC_ID2] PRIMARY KEY([키 컬럼명]);
+
+# 참조하기
+-- alter table [사용할 테이블명]
+-- add constraint [LOC_ID3] foreign key ([키 컬럼명]) references [참조할 테이블명]([키 컬럼명]);
 
 alter table poverty_rate
 ADD CONSTRAINT LOC_ID PRIMARY KEY(LOCATION);
@@ -81,9 +88,10 @@ add constraint LOC_ID7 foreign key (LOCATION) references 국가식별번호(LOCA
 
 
 
-SELECT 국가식별번호.country name FROM social_support	JOIN 국가식별번호	
+SELECT `country name`,Value  FROM social_support	JOIN 국가식별번호	
 ON social_support.LOCATION = 국가식별번호.LOCATION
-WHERE SUBJECT='OLD' ;
+WHERE SUBJECT='OLD' 
+ORDER BY Value;
 
 INSERT INTO 국가식별번호[countryname]
 values();
@@ -107,4 +115,3 @@ ADD CONSTRAINT ECO_ID6 PRIMARY KEY(age);
 
 alter table 고용률
 add constraint ECO_ID7 foreign key (age) references 경제활동인구비율(age);
-
