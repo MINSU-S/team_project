@@ -1,0 +1,38 @@
+---
+title: "Titinic Data Analysis"
+author: "minsoo"
+date: "2022-08-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE) 
+getwd()
+```
+# 데이터프레임 읽어보기
+
+
+
+```{r }
+df <- read.csv('./Titinic/train.csv',header=T)
+str(df)
+```
+# Pclass(승객 등급별 사망여부)
+```{r}
+mosaicplot(Pclass~Survived ,data=df,
+           col=2:4)
+```
+
+## 출발 항구별 승객수는 얼마일까?
+```{r}
+table(df$Embarked)
+barplot(table(df$Embarked),col=2:4)
+
+```
+# 결측치 분포는 어떠할까요?
+```{r}
+#install.packages('VIM')
+library(VIM)
+aggr(df, numbers=T,prop=F)
+```
+
