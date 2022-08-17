@@ -1,5 +1,6 @@
 df <- read.csv('./SleepStudyData.csv')
-df <- na.omit(df)
+df$Hours[is.na(df$Hours)] <- mean(df$Hours, na.rm=TRUE)
+
 str(df)
 # EDA-------------------------------------------------------------------------
 df$Enough <- factor(ifelse(df$Enough=='Yes',1,0))
@@ -20,8 +21,6 @@ summary(result)
 
 # 종속변수 : Enough 타입 변경 (chr -> factor)
 df$Enough <- factor(ifelse(df$Enough=='Yes',1,0))
-df <- subset(df, !is.na(Hours),c('Enough','Hours','Tired'))
-df
 model <- glm(Enough~Hours+Tired,
             family ='binomial'(link='logit'),
             data = df)
@@ -46,6 +45,7 @@ exp(model$coefficients)
 exp(confint(model))
 #-----------------------------------------------------------------------------
 # train, test로 나눠서 모형 평가.
+set.seed(2022)
 test_index <- sample(1:dim(df)[1],as.integer(dim(df)[1] *0.2), replace = F )
 test_index
 
@@ -68,7 +68,7 @@ exp(model$coefficients)
 # 직접적으로 바로 신뢰구간을 포함한 오즈비 확인
 exp(confint(model))
 
-
+?plot.roc
 # 범주형 ~ 범주형
 # ===========================================================================
 # 1. 수면만족도 ~ 손 닿는 거리 : 카이제곱분석(교차분석)
@@ -107,7 +107,7 @@ chisq.test(df$PhoneTime,df$Enough)
 # H0(귀무가설 기각 불가능)
 # 해석: 잠들기 전 30분 이내 스마트폰 사용 여부에 따라 수면 만족도는 "차이가 없다."
 #==================================================================================
-# 3. 수면만족도 ~ 손 닿는 거리 : 카이제곱분석(교차분석)
+# 3. 수면만족도 ~ 아침식사 : 카이제곱분석(교차분석)
 df$Breakfast[df$Breakfast == 'Yes'] <-'평소 아침식사 O'
 df$Breakfast[df$Breakfast == 'No'] <-'평소 아침식사 X'
 df$Breakfast <- as.factor(df$Breakfast)
@@ -128,3 +128,38 @@ test_index
 
 train_df <-df[-test_index,]
 test_df<-df[test_index,]
+
+
+library(rpart)
+library(rpart.plot)
+
+#df<-read.csv('./SleepStudyData.csv')
+barplot(table(df$Enough,df$Hours),,legend=(c('수면불만족','수면만족')))
+barplot(table(df$Enough,df$Tired),legend=(c('수면불만족','수면만족')))
+str(df)
+
+train <- sample(1:100, 100)
+tree <- rpart(Enough~Hours+Tired, data= df, subset=train,method = "class")
+rpart.plot(tree)
+summary(tree)
+
+printcp(tree)
+pruned_tree <- prune(tree, cp = 0.1)
+predict(pruned_tree, df[-train,], type = "class")
+
+tt <- table(df$Enough[-train], predict(pruned_tree, df[-train,], type = "class"))
+
+sum(tt[row(tt) == col(tt)])/sum(tt)
+
+1-sum(tt[row(tt) == col(tt)])/sum(tt)
+
+test <- df[-train,]
+test$pred <- predict(pruned_tree, df[-train,], type = "class")
+
+library(ggplot2)
+ggplot(test, aes(Enough, pred, color = Enough)) + 
+geom_jitter(width = 0.2, height = 0.1, size=2) +
+labs(title="Confusion Matrix", subtitle="Predicted vs. Observed from df dataset",
+y="Predicted",
+x="Truth")
+```

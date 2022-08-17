@@ -1,0 +1,196 @@
+# SleepStudy
+수면 습관이 수면 만족도에 미치는 영향
+
+목차
+1. dataset 확인 및 분석 방향 설정  
+2. 수치형 ~ 범주형 분석  
+3. 범주형 ~ 범주형 분석  
+4. 결론  
+
+
+## 1. dataset 확인 및 분석 방향 설정
+
+### 1-1. dataset 구성 확인
+```{r}
+df <- read.csv('./SleepStudyData.csv')
+str(df)
+barplot(table(df$Enough),main='수면만족도')
+```
+종속변수(범주형) : Enough
+
+독립변수(수치형) : Hours, Tired 
+2개의 변수는 수치형이지만 정도를 나타내는 범주형입니다. 로지스틱 회귀분석으로 P-value와 오즈비를 통해 관계를 분석하고, ROC-CURVE의 AUC를 이용해 모델의 신뢰도를 확인하겠습니다.
+
+독립변수(범주형) : PhoneReach, PhoneTime, Breakfast
+4개의 변수가 2개의 범주(Yes,No)를 가지는 범주형 데이터이므로 카이 검정을 통해 크로스테이블을 생성하고, p-value를 통해 관계를 분석하겠습니다. 
+
+### 1-2. 결측치 및 이상치 확인
+
+결측치 확인 및 평균값으로 대체
+```{r}
+library(VIM)
+aggr(df, numbers=T,prop=F)
+df$Hours[is.na(df$Hours)] <- mean(df$Hours, na.rm=TRUE)
+
+```
+수면 시간은 반드시 존재하는 것이 명확하므로 삭제하지 않고 평균값으로 대체했습니다.
+
+이상치 확인
+```{r}
+df$Enough <- factor(ifelse(df$Enough=='Yes',1,0))
+df$PhoneReach <- factor(ifelse(df$PhoneReach=='Yes',1,0))
+df$Breakfast <- factor(ifelse(df$Breakfast=='Yes',1,0))
+df$PhoneTime <- factor(ifelse(df$PhoneTime=='Yes',1,0))
+boxplot(df)
+plot(df$PhoneTime) 
+```
+잠들기 전 30분 스마트폰 사용유무의 경우, 사용하지 않는다는 값이 20%를 차지하여 무시할 수 없다고 판단하여 그대로 사용했습니다.
+
+## 범주형 ~ 범주형 분석
+- 카이 검정
+
+#### 범주형 데이터들 타입변경 (str-> factor)
+```{r}
+library(gmodels)
+df$Enough[df$Enough=='Yes'] <-'수면만족'
+df$Enough[df$Enough=='No'] <-'수면불만족'
+df$Enough <- as.factor(df$Enough)
+
+df$PhoneReach[df$PhoneReach=='Yes'] <-'손 닿는 거리'
+df$PhoneReach[df$PhoneReach=='No'] <-'손 닿지 않는 거리'
+df$PhoneReach <- as.factor(df$PhoneReach)
+
+df$PhoneTime[df$PhoneTime == 'Yes'] <-'자기 전 30분 이내 스마트폰 사용 O'
+df$PhoneTime[df$PhoneTime == 'No'] <-'자기 전 30분 이내 스마트폰 사용 X'
+df$PhoneTime <- as.factor(df$PhoneTime)
+
+df$Breakfast[df$Breakfast == 'Yes'] <-'평소 아침식사 O'
+df$Breakfast[df$Breakfast == 'No'] <-'평소 아침식사 X'
+df$Breakfast <- as.factor(df$Breakfast)
+```
+
+#### 수면만족도 ~ 잠들 때, 스마트폰과의 접근성
+```{r}
+table(df$PhoneReach,df$Enough)
+chisq.test(df$PhoneReach,df$Enough)
+```
+
+#### 수면만족도 ~ 잠들기 30분 전 스마트폰 사용유무
+```{r}
+table(df$PhoneTime,df$Enough)
+chisq.test(df$PhoneTime,df$Enough)
+```
+
+#### 수면만족도 ~ 평소 아침식사 습관
+```{r}
+table(df$Breakfast,df$Enough)
+chisq.test(df$Breakfast,df$Enough)
+```
+
+수면만족도 ~ 잠들 때, 스마트폰과의 접근성  : p-value > 0.05   
+수면만족도 ~ 잠들기 30분 전 스마트폰 사용유무: p-value > 0.05   
+수면만족도 ~ 평소 아침식사 습관 : p-value > 0.05  
+
+모두 귀무가설(H0) 기각 불가능.
+
+해석:   
+잘 때 손 닿는 곳에 스마트폰의 유무에 따라 수면 만족도는 "차이가 없다."  
+잠들기 전 30분, 스마트폰 사용에 따른 수면만족도는 "차이가 없다."  
+평소 아침식사 습관에 따른 수면만족도는 "차이가 없다."  
+
+## 2. 범주형 종속변수와 ~ 수치형 독립변수 분석 
+- 로지스틱 회귀분석
+
+### barplot
+```{r}
+barplot(table(df$Enough,df$Hours),,legend=(c('수면불만족','수면만족')))
+barplot(table(df$Enough,df$Tired),legend=(c('수면불만족','수면만족')))
+```
+최소 6시간 이상은 자야 수면만족이 시작된다.
+```{r}
+library(rpart)
+library(rpart.plot)
+train <- sample(1:100, 100)
+tree <- rpart(Enough~Hours+Tired, data= df, subset=train,method = "class")
+rpart.plot(tree)
+```
+
+### 2-1. model 생성
+```{r}
+model <- glm(Enough~Hours+Tired,
+            family =binomial(link='logit'),
+            data = df)
+summary(model)
+```
+
+### 2-2. 오즈비 확인
+```{r}
+exp(model$coefficients)
+exp(confint(model))
+```
+
+### 2-3. 분류기 신뢰도 체크
+
+#### A. 전체 데이터 사용
+```{r}
+library(pROC)
+Hours_roc <- roc(Enough~model$fitted.values, data =df)
+plot.roc(Hours_roc, col ='tomato',
+            print.auc = TRUE,
+            max.auc.polygon=TRUE)
+```
+
+#### B. train data, test data을 이용해 분류기 신뢰도 체크
+
+- 전체 데이터에서 train data, test data 만들기  
+train data: 80%  
+test data : 20%  
+```{r}
+set.seed(8)
+test_index <- sample(1:dim(df)[1],as.integer(dim(df)[1] *0.2), replace = F )
+test_index
+
+train_df <-df[-test_index,]
+test_df <-df[test_index,]
+train_df
+test_df
+```
+
+ROC_CURVE(test data ~ train data)
+```{r}
+par(mfrow=c(1,2))
+model_train <- glm(Enough~Hours+Tired,
+            family =binomial(link='logit'),
+            data =  train_df)
+
+Hours_roc <- roc(Enough~model_train$fitted.values, data =train_df)
+plot.roc(Hours_roc, col ='tomato',
+            print.auc = TRUE,
+            max.auc.polygon=TRUE)            
+
+pred_p <- predict(model_train,test_df[,-1],type = 'response')
+pred_p
+Hours_roc <- roc(test_df$Enough ~ pred_p)
+plot.roc(Hours_roc, col ='tomato', 
+            print.auc = TRUE,
+            max.auc.polygon=TRUE)
+par(mfrow=c(1,2))
+```
+ROC_CURVE(train data) AUC: 0.819  
+ROC_CURVE(train data) AUC: 0.822  
+ROC_CURVE(test data ) AUC: 0.823  
+분류기의 AUC범위가 0.8 ~ 0.9에 속해 B등급으로 우수한 분류기임을 확인할 수 있습니다.
+
+#### 2-4. T.TEST
+```{r}
+t.test(df$Hours~df$Enough)
+t.test(df$Tired~df$Enough)
+```
+수면 만족하는 사람과 만족하지 않은 사람 두 그룹간 비교   
+
+1. P-value <0.05 이므로 그룹간 수면 시간의 평균 차이가 있다.    
+2. P-value <0.05 이므로 하루 피곤함정도의 평균 차이가 있다.  
+
+
+### [결론]
+개인이 체감하는 수면 만족도의 경우, 수면의 질보다 수면 시간이 더 큰 영향을 미친다.  

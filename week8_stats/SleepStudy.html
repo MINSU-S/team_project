@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>sleepstudy</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="SleepStudy_files/libs/clipboard/clipboard.min.js"></script>
+<script src="SleepStudy_files/libs/quarto-html/quarto.js"></script>
+<script src="SleepStudy_files/libs/quarto-html/popper.min.js"></script>
+<script src="SleepStudy_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="SleepStudy_files/libs/quarto-html/anchor.min.js"></script>
+<link href="SleepStudy_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="SleepStudy_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="SleepStudy_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="SleepStudy_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="SleepStudy_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="sleepstudy" class="level1">
+<h1>SleepStudy</h1>
+<p>수면 습관이 수면 만족도에 미치는 영향</p>
+<p>목차 1. dataset 확인 및 분석 방향 설정<br>
+2. 수치형 ~ 범주형 분석<br>
+3. 범주형 ~ 범주형 분석<br>
+4. 결론</p>
+<section id="dataset-확인-및-분석-방향-설정" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-확인-및-분석-방향-설정">1. dataset 확인 및 분석 방향 설정</h2>
+<section id="dataset-구성-확인" class="level3">
+<h3 class="anchored" data-anchor-id="dataset-구성-확인">1-1. dataset 구성 확인</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'./SleepStudyData.csv'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   104 obs. of  6 variables:
+ $ Enough    : chr  "Yes" "No" "Yes" "No" ...
+ $ Hours     : int  8 6 6 7 7 7 7 7 4 6 ...
+ $ PhoneReach: chr  "Yes" "Yes" "Yes" "Yes" ...
+ $ PhoneTime : chr  "Yes" "Yes" "Yes" "Yes" ...
+ $ Tired     : int  3 3 2 4 2 4 3 3 2 3 ...
+ $ Breakfast : chr  "Yes" "No" "Yes" "No" ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">table</span>(df<span class="sc">$</span>Enough),<span class="at">main=</span><span class="st">'수면만족도'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="SleepStudy_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>종속변수(범주형) : Enough</p>
+<p>독립변수(수치형) : Hours, Tired 2개의 변수는 수치형이지만 정도를 나타내는 범주형입니다. 로지스틱 회귀분석으로 P-value와 오즈비를 통해 관계를 분석하고, ROC-CURVE의 AUC를 이용해 모델의 신뢰도를 확인하겠습니다.</p>
+<p>독립변수(범주형) : PhoneReach, PhoneTime, Breakfast 4개의 변수가 2개의 범주(Yes,No)를 가지는 범주형 데이터이므로 카이 검정을 통해 크로스테이블을 생성하고, p-value를 통해 관계를 분석하겠습니다.</p>
+</section>
+<section id="결측치-및-이상치-확인" class="level3">
+<h3 class="anchored" data-anchor-id="결측치-및-이상치-확인">1-2. 결측치 및 이상치 확인</h3>
+<p>결측치 확인 및 평균값으로 대체</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(VIM)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>필요한 패키지를 로딩중입니다: colorspace</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>필요한 패키지를 로딩중입니다: grid</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>VIM is ready to use.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Suggestions and bug-reports can be submitted at: https://github.com/statistikat/VIM/issues</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+다음의 패키지를 부착합니다: 'VIM'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:datasets':
+
+    sleep</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aggr</span>(df, <span class="at">numbers=</span>T,<span class="at">prop=</span>F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="SleepStudy_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Hours[<span class="fu">is.na</span>(df<span class="sc">$</span>Hours)] <span class="ot">&lt;-</span> <span class="fu">mean</span>(df<span class="sc">$</span>Hours, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>수면 시간은 반드시 존재하는 것이 명확하므로 삭제하지 않고 평균값으로 대체했습니다.</p>
+<p>이상치 확인</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Enough <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(df<span class="sc">$</span>Enough<span class="sc">==</span><span class="st">'Yes'</span>,<span class="dv">1</span>,<span class="dv">0</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>PhoneReach <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(df<span class="sc">$</span>PhoneReach<span class="sc">==</span><span class="st">'Yes'</span>,<span class="dv">1</span>,<span class="dv">0</span>))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Breakfast <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(df<span class="sc">$</span>Breakfast<span class="sc">==</span><span class="st">'Yes'</span>,<span class="dv">1</span>,<span class="dv">0</span>))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>PhoneTime <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(df<span class="sc">$</span>PhoneTime<span class="sc">==</span><span class="st">'Yes'</span>,<span class="dv">1</span>,<span class="dv">0</span>))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="SleepStudy_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>PhoneTime) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="SleepStudy_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>잠들기 전 30분 스마트폰 사용유무의 경우, 사용하지 않는다는 값이 20%를 차지하여 무시할 수 없다고 판단하여 그대로 사용했습니다.</p>
+</section>
+</section>
+<section id="범주형-범주형-분석" class="level2">
+<h2 class="anchored" data-anchor-id="범주형-범주형-분석">범주형 ~ 범주형 분석</h2>
+<ul>
+<li>카이 검정</li>
+</ul>
+<section id="범주형-데이터들-타입변경-str--factor" class="level4">
+<h4 class="anchored" data-anchor-id="범주형-데이터들-타입변경-str--factor">범주형 데이터들 타입변경 (str-&gt; factor)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gmodels)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Enough[df<span class="sc">$</span>Enough<span class="sc">==</span><span class="st">'Yes'</span>] <span class="ot">&lt;-</span><span class="st">'수면만족'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in `[&lt;-.factor`(`*tmp*`, df$Enough == "Yes", value = structure(c(2L, :
+요인의 수준(factor level)이 올바르지 않아 NA가 생성되었습니다.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Enough[df<span class="sc">$</span>Enough<span class="sc">==</span><span class="st">'No'</span>] <span class="ot">&lt;-</span><span class="st">'수면불만족'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in `[&lt;-.factor`(`*tmp*`, df$Enough == "No", value = structure(c(2L, : 요
+인의 수준(factor level)이 올바르지 않아 NA가 생성되었습니다.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Enough <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>Enough)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>PhoneReach[df<span class="sc">$</span>PhoneReach<span class="sc">==</span><span class="st">'Yes'</span>] <span class="ot">&lt;-</span><span class="st">'손 닿는 거리'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in `[&lt;-.factor`(`*tmp*`, df$PhoneReach == "Yes", value =
+structure(c(2L, : 요인의 수준(factor level)이 올바르지 않아 NA가 생성되었습니다.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>PhoneReach[df<span class="sc">$</span>PhoneReach<span class="sc">==</span><span class="st">'No'</span>] <span class="ot">&lt;-</span><span class="st">'손 닿지 않는 거리'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in `[&lt;-.factor`(`*tmp*`, df$PhoneReach == "No", value =
+structure(c(2L, : 요인의 수준(factor level)이 올바르지 않아 NA가 생성되었습니다.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>PhoneReach <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>PhoneReach)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>PhoneTime[df<span class="sc">$</span>PhoneTime <span class="sc">==</span> <span class="st">'Yes'</span>] <span class="ot">&lt;-</span><span class="st">'자기 전 30분 이내 스마트폰 사용 O'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in `[&lt;-.factor`(`*tmp*`, df$PhoneTime == "Yes", value =
+structure(c(2L, : 요인의 수준(factor level)이 올바르지 않아 NA가 생성되었습니다.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>PhoneTime[df<span class="sc">$</span>PhoneTime <span class="sc">==</span> <span class="st">'No'</span>] <span class="ot">&lt;-</span><span class="st">'자기 전 30분 이내 스마트폰 사용 X'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in `[&lt;-.factor`(`*tmp*`, df$PhoneTime == "No", value = structure(c(2L, :
+요인의 수준(factor level)이 올바르지 않아 NA가 생성되었습니다.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>PhoneTime <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>PhoneTime)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Breakfast[df<span class="sc">$</span>Breakfast <span class="sc">==</span> <span class="st">'Yes'</span>] <span class="ot">&lt;-</span><span class="st">'평소 아침식사 O'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in `[&lt;-.factor`(`*tmp*`, df$Breakfast == "Yes", value =
+structure(c(2L, : 요인의 수준(factor level)이 올바르지 않아 NA가 생성되었습니다.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Breakfast[df<span class="sc">$</span>Breakfast <span class="sc">==</span> <span class="st">'No'</span>] <span class="ot">&lt;-</span><span class="st">'평소 아침식사 X'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in `[&lt;-.factor`(`*tmp*`, df$Breakfast == "No", value = structure(c(2L, :
+요인의 수준(factor level)이 올바르지 않아 NA가 생성되었습니다.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Breakfast <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>Breakfast)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="수면만족도-잠들-때-스마트폰과의-접근성" class="level4">
+<h4 class="anchored" data-anchor-id="수면만족도-잠들-때-스마트폰과의-접근성">수면만족도 ~ 잠들 때, 스마트폰과의 접근성</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>PhoneReach,df<span class="sc">$</span>Enough)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+     0  1
+  0 19 13
+  1 49 23</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(df<span class="sc">$</span>PhoneReach,df<span class="sc">$</span>Enough)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test with Yates' continuity correction
+
+data:  df$PhoneReach and df$Enough
+X-squared = 0.40389, df = 1, p-value = 0.5251</code></pre>
+</div>
+</div>
+</section>
+<section id="수면만족도-잠들기-30분-전-스마트폰-사용유무" class="level4">
+<h4 class="anchored" data-anchor-id="수면만족도-잠들기-30분-전-스마트폰-사용유무">수면만족도 ~ 잠들기 30분 전 스마트폰 사용유무</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>PhoneTime,df<span class="sc">$</span>Enough)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+     0  1
+  0 13  7
+  1 55 29</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(df<span class="sc">$</span>PhoneTime,df<span class="sc">$</span>Enough)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test with Yates' continuity correction
+
+data:  df$PhoneTime and df$Enough
+X-squared = 2.2981e-31, df = 1, p-value = 1</code></pre>
+</div>
+</div>
+</section>
+<section id="수면만족도-평소-아침식사-습관" class="level4">
+<h4 class="anchored" data-anchor-id="수면만족도-평소-아침식사-습관">수면만족도 ~ 평소 아침식사 습관</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Breakfast,df<span class="sc">$</span>Enough)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+     0  1
+  0 30 11
+  1 38 25</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(df<span class="sc">$</span>Breakfast,df<span class="sc">$</span>Enough)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test with Yates' continuity correction
+
+data:  df$Breakfast and df$Enough
+X-squared = 1.2895, df = 1, p-value = 0.2561</code></pre>
+</div>
+</div>
+<p>수면만족도 ~ 잠들 때, 스마트폰과의 접근성 : p-value &gt; 0.05<br>
+수면만족도 ~ 잠들기 30분 전 스마트폰 사용유무: p-value &gt; 0.05<br>
+수면만족도 ~ 평소 아침식사 습관 : p-value &gt; 0.05</p>
+<p>모두 귀무가설(H0) 기각 불가능.</p>
+<p>해석:<br>
+잘 때 손 닿는 곳에 스마트폰의 유무에 따라 수면 만족도는 “차이가 없다.”<br>
+잠들기 전 30분, 스마트폰 사용에 따른 수면만족도는 “차이가 없다.”<br>
+평소 아침식사 습관에 따른 수면만족도는 “차이가 없다.”</p>
+</section>
+</section>
+<section id="범주형-종속변수와-수치형-독립변수-분석" class="level2">
+<h2 class="anchored" data-anchor-id="범주형-종속변수와-수치형-독립변수-분석">2. 범주형 종속변수와 ~ 수치형 독립변수 분석</h2>
+<ul>
+<li>로지스틱 회귀분석</li>
+</ul>
+<section id="barplot" class="level3">
+<h3 class="anchored" data-anchor-id="barplot">barplot</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">table</span>(df<span class="sc">$</span>Enough,df<span class="sc">$</span>Hours),,<span class="at">legend=</span>(<span class="fu">c</span>(<span class="st">'수면불만족'</span>,<span class="st">'수면만족'</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="SleepStudy_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">table</span>(df<span class="sc">$</span>Enough,df<span class="sc">$</span>Tired),<span class="at">legend=</span>(<span class="fu">c</span>(<span class="st">'수면불만족'</span>,<span class="st">'수면만족'</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="SleepStudy_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>최소 6시간 이상은 자야 수면만족이 시작된다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="dv">100</span>)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(Enough<span class="sc">~</span>Hours<span class="sc">+</span>Tired, <span class="at">data=</span> df, <span class="at">subset=</span>train,<span class="at">method =</span> <span class="st">"class"</span>)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="SleepStudy_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="model-생성" class="level3">
+<h3 class="anchored" data-anchor-id="model-생성">2-1. model 생성</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(Enough<span class="sc">~</span>Hours<span class="sc">+</span>Tired,</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span><span class="fu">binomial</span>(<span class="at">link=</span><span class="st">'logit'</span>),</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> df)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Enough ~ Hours + Tired, family = binomial(link = "logit"), 
+    data = df)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.6519  -0.6572  -0.4502   0.7218   2.3347  
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  -2.8390     1.6622  -1.708 0.087650 .  
+Hours         0.8382     0.2352   3.564 0.000365 ***
+Tired        -1.2120     0.3222  -3.761 0.000169 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 134.167  on 103  degrees of freedom
+Residual deviance:  97.767  on 101  degrees of freedom
+AIC: 103.77
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+</section>
+<section id="오즈비-확인" class="level3">
+<h3 class="anchored" data-anchor-id="오즈비-확인">2-2. 오즈비 확인</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(model<span class="sc">$</span>coefficients)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)       Hours       Tired 
+  0.0584868   2.3123113   0.2975916 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">confint</span>(model))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Waiting for profiling to be done...</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  2.5 %    97.5 %
+(Intercept) 0.001869021 1.3573510
+Hours       1.504924557 3.8203639
+Tired       0.148762259 0.5326794</code></pre>
+</div>
+</div>
+</section>
+<section id="분류기-신뢰도-체크" class="level3">
+<h3 class="anchored" data-anchor-id="분류기-신뢰도-체크">2-3. 분류기 신뢰도 체크</h3>
+<section id="a.-전체-데이터-사용" class="level4">
+<h4 class="anchored" data-anchor-id="a.-전체-데이터-사용">A. 전체 데이터 사용</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Type 'citation("pROC")' for a citation.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+다음의 패키지를 부착합니다: 'pROC'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:gmodels':
+
+    ci</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:colorspace':
+
+    coords</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    cov, smooth, var</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>Hours_roc <span class="ot">&lt;-</span> <span class="fu">roc</span>(Enough<span class="sc">~</span>model<span class="sc">$</span>fitted.values, <span class="at">data =</span>df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = 0, case = 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting direction: controls &lt; cases</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.roc</span>(Hours_roc, <span class="at">col =</span><span class="st">'tomato'</span>,</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">print.auc =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">max.auc.polygon=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="SleepStudy_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="b.-train-data-test-data을-이용해-분류기-신뢰도-체크" class="level4">
+<h4 class="anchored" data-anchor-id="b.-train-data-test-data을-이용해-분류기-신뢰도-체크">B. train data, test data을 이용해 분류기 신뢰도 체크</h4>
+<ul>
+<li>전체 데이터에서 train data, test data 만들기<br>
+train data: 80%<br>
+test data : 20%</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>test_index <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(df)[<span class="dv">1</span>],<span class="fu">as.integer</span>(<span class="fu">dim</span>(df)[<span class="dv">1</span>] <span class="sc">*</span><span class="fl">0.2</span>), <span class="at">replace =</span> F )</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>test_index</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  96  52  55  98  79  12  42   1  93  50   3   6  86 103  75  68   9  76  62
+[20]   7</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>train_df <span class="ot">&lt;-</span>df[<span class="sc">-</span>test_index,]</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>test_df <span class="ot">&lt;-</span>df[test_index,]</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>train_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Enough     Hours PhoneReach PhoneTime Tired Breakfast
+2        0  6.000000          1         1     3         0
+4        0  7.000000          1         1     4         0
+5        0  7.000000          1         1     2         1
+8        0  7.000000          1         1     3         1
+10       0  6.000000          1         1     3         1
+11       0 10.000000          1         1     4         0
+13       1  7.000000          1         1     3         0
+14       1  8.000000          1         1     2         0
+15       1  7.000000          0         1     3         1
+16       1  8.000000          1         1     3         0
+17       1  6.000000          1         1     4         1
+18       1  8.000000          1         1     3         1
+19       0  9.000000          1         1     3         1
+20       1  8.000000          1         1     3         0
+21       0  2.000000          1         1     5         0
+22       0  4.000000          1         1     2         1
+23       0  5.000000          1         0     3         1
+24       0  7.000000          1         0     3         1
+25       0  5.000000          1         1     2         0
+26       0  7.000000          0         1     5         0
+27       0  6.000000          1         1     3         0
+28       0  6.000000          1         1     2         0
+29       1  7.000000          1         0     2         1
+30       1  9.000000          0         0     2         1
+31       1  8.000000          1         1     2         1
+32       0  8.000000          0         1     3         1
+33       0  6.000000          1         1     4         0
+34       0  6.000000          0         0     3         0
+35       0  7.000000          0         1     3         1
+36       0  7.000000          1         1     3         1
+37       1  7.000000          0         0     2         1
+38       1  9.000000          0         1     2         1
+39       0  5.000000          1         0     5         0
+40       0  7.000000          1         1     2         0
+41       1  8.000000          0         1     1         1
+43       0  5.000000          1         1     3         0
+44       0  6.000000          1         1     3         1
+45       0  4.000000          0         0     5         0
+46       0  7.000000          1         1     4         0
+47       1  9.000000          1         1     1         1
+48       0  5.000000          0         0     5         1
+49       0  6.000000          0         1     3         1
+51       0  5.000000          1         0     3         0
+53       0  7.000000          0         1     4         1
+54       0  5.000000          1         1     2         0
+56       0  5.000000          0         1     2         1
+57       0  6.000000          1         1     3         0
+58       0  9.000000          0         1     5         0
+59       0  9.000000          1         0     4         1
+60       1  7.000000          1         1     2         0
+61       0  6.000000          1         1     3         0
+63       0  2.000000          0         0     5         0
+64       0  8.000000          1         1     5         0
+65       0  7.000000          1         1     4         1
+66       0  6.656863          1         0     3         1
+67       1  7.000000          1         0     1         0
+69       1  7.000000          1         0     3         0
+70       0  6.000000          1         1     3         1
+71       1  6.000000          0         1     4         1
+72       0  5.000000          1         1     4         1
+73       0  5.000000          1         1     4         0
+74       0  6.000000          0         1     5         1
+77       0  8.000000          1         1     4         1
+78       1  6.000000          1         1     4         0
+80       0  7.000000          1         1     4         0
+81       1  6.000000          1         1     3         0
+82       0  6.000000          1         1     3         0
+83       0  5.000000          0         0     4         0
+84       1  8.000000          0         0     2         1
+85       1  8.000000          0         1     1         1
+87       0  9.000000          0         1     5         1
+88       0  5.000000          1         0     4         1
+89       0  6.000000          1         0     2         1
+90       1  8.000000          0         1     3         1
+91       0  7.000000          0         1     4         1
+92       1  6.656863          0         1     2         1
+94       1  9.000000          0         0     2         1
+95       1  8.000000          1         1     4         0
+97       0  7.000000          1         1     4         1
+99       0  6.000000          1         1     3         0
+100      0  7.000000          1         1     2         1
+101      0  7.000000          0         1     3         1
+102      1  8.000000          1         1     3         1
+104      1  6.000000          1         1     3         1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>test_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Enough Hours PhoneReach PhoneTime Tired Breakfast
+96       1     7          0         1     2         1
+52       0     8          1         1     3         1
+55       0     7          1         1     3         1
+98       1     7          1         1     2         0
+79       0     6          1         1     3         1
+12       0     7          1         1     2         1
+42       0     7          0         1     4         1
+1        1     8          1         1     3         1
+93       1     7          0         1     2         1
+50       0     4          1         1     2         1
+3        1     6          1         1     2         1
+6        0     7          1         1     4         0
+86       0     6          1         1     3         0
+103      1     7          1         1     2         1
+75       1     7          1         1     4         1
+68       0     7          1         1     3         1
+9        0     4          0         1     2         1
+76       0     6          0         1     4         0
+62       0     7          1         1     3         1
+7        1     7          1         1     3         1</code></pre>
+</div>
+</div>
+<p>ROC_CURVE(test data ~ train data)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>model_train <span class="ot">&lt;-</span> <span class="fu">glm</span>(Enough<span class="sc">~</span>Hours<span class="sc">+</span>Tired,</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span><span class="fu">binomial</span>(<span class="at">link=</span><span class="st">'logit'</span>),</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span>  train_df)</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>Hours_roc <span class="ot">&lt;-</span> <span class="fu">roc</span>(Enough<span class="sc">~</span>model_train<span class="sc">$</span>fitted.values, <span class="at">data =</span>train_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = 0, case = 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting direction: controls &lt; cases</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.roc</span>(Hours_roc, <span class="at">col =</span><span class="st">'tomato'</span>,</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">print.auc =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">max.auc.polygon=</span><span class="cn">TRUE</span>)            </span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>pred_p <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_train,test_df[,<span class="sc">-</span><span class="dv">1</span>],<span class="at">type =</span> <span class="st">'response'</span>)</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>pred_p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        96         52         55         98         79         12         42 
+0.61910851 0.53456156 0.34191171 0.61910851 0.19030337 0.61910851 0.14241937 
+         1         93         50          3          6         86        103 
+0.53456156 0.61910851 0.13078966 0.42372811 0.14241937 0.19030337 0.61910851 
+        75         68          9         76         62          7 
+0.14241937 0.34191171 0.13078966 0.06987619 0.34191171 0.34191171 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>Hours_roc <span class="ot">&lt;-</span> <span class="fu">roc</span>(test_df<span class="sc">$</span>Enough <span class="sc">~</span> pred_p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = 0, case = 1
+Setting direction: controls &lt; cases</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.roc</span>(Hours_roc, <span class="at">col =</span><span class="st">'tomato'</span>, </span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">print.auc =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">max.auc.polygon=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="SleepStudy_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ROC_CURVE(train data) AUC: 0.819<br>
+ROC_CURVE(train data) AUC: 0.822<br>
+ROC_CURVE(test data ) AUC: 0.823<br>
+분류기의 AUC범위가 0.8 ~ 0.9에 속해 B등급으로 우수한 분류기임을 확인할 수 있습니다.</p>
+</section>
+<section id="t.test" class="level4">
+<h4 class="anchored" data-anchor-id="t.test">2-4. T.TEST</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(df<span class="sc">$</span>Hours<span class="sc">~</span>df<span class="sc">$</span>Enough)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  df$Hours by df$Enough
+t = -4.7177, df = 99.485, p-value = 7.8e-06
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -1.5697137 -0.6402697
+sample estimates:
+mean in group 0 mean in group 1 
+       6.274366        7.379357 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(df<span class="sc">$</span>Tired<span class="sc">~</span>df<span class="sc">$</span>Enough)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  df$Tired by df$Enough
+t = 4.7428, df = 76.236, p-value = 9.62e-06
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ 0.5118405 1.2528654
+sample estimates:
+mean in group 0 mean in group 1 
+       3.382353        2.500000 </code></pre>
+</div>
+</div>
+<p>수면 만족하는 사람과 만족하지 않은 사람 두 그룹간 비교</p>
+<ol type="1">
+<li>P-value &lt;0.05 이므로 그룹간 수면 시간의 평균 차이가 있다.<br>
+</li>
+<li>P-value &lt;0.05 이므로 하루 피곤함정도의 평균 차이가 있다.</li>
+</ol>
+</section>
+</section>
+<section id="결론" class="level3">
+<h3 class="anchored" data-anchor-id="결론">[결론]</h3>
+<p>개인이 체감하는 수면 만족도의 경우, 수면의 질보다 수면 시간이 더 큰 영향을 미친다.</p>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
