@@ -13,7 +13,7 @@ library(VIM)
 
 data_birth <- read_excel("./project_data.xlsx", sheet = '합계출산율')
 data_dead  <- read_excel("./project_data.xlsx", sheet = '영아사망률')
-data_1p_gdp <- read.csv("./1인당국내총생산.csv", na.strings=c('-'))
+data_1p_gdp <- read_excel("./1인당국내총생산.xlsx")
 # 2. 데이터셋 확인
 
 # 2-1) 행,열 수 확인 : 30행 44열
@@ -26,15 +26,6 @@ str(data_birth)
 str(data_dead)
 
 str(data_1p_gdp)
-names(data_1p_gdp) <- c('시점',1960:2020)
-data_1p_gdp <- t(data_1p_gdp)
-head(data_1p_gdp)
-colnames(data_1p_gdp)
-data_1p_gdp<-data.frame(data_1p_gdp)
-
-data_1p_gdp <- data_1p_gdp[-1,]
-data_1p_gdp$시점 <- row.names(data_1p_gdp)
-data_1p_gdp
 
 # 2-3) 결측치 확인 : 대륙별 통합 데이터 5열 전부 결측치
 aggr(data_birth, prop = FALSE, numbers = TRUE)
@@ -45,24 +36,24 @@ aggr(data_1p_gdp, prop = FALSE, numbers = TRUE)
 data_birth <- data_birth[-c(2,7,11,15,42)]
 data_dead <- data_dead[-c(2,7,11,15,42)]
 
-# 3. 데이터 재구성
-install.packages('reshape')
+# 3. 데이터 재구성 --------------------------------------------------
+#install.packages('reshape')
 library(reshape)
 
-# melt로 데이터 재구성
+# melt
 # 출산율합계
 data_birth<-data.frame(data_birth) # df로 변환
-data_birth <- data_birth[c(1:15),] # 20년도까지만 추출
+data_birth <- data_birth[c(2:14),] # 20년도까지만 추출
 data_birth <- melt(data_birth,id.vars=c('시점')) # 시점을 기준으로 각 국가별 데이터 재구성 ( 시점 / 국가 / 값 )
+colnames(data_birth)[1]<-'year'
 colnames(data_birth)[2]<-'country'
 colnames(data_birth)[3]<-'birth_rate' # 컬럼 이름 변경
 head(data_birth,100)
-data_birth$continent<-c('아시아')
-data_birth
+
 
 # 영아사망률
 data_dead<-data.frame(data_dead) # df로 변환
-data_dead <- data_dead[c(1:15),] # 20년도까지만 추출
+data_dead <- data_dead[c(2:14),] # 20년도까지만 추출
 data_dead <- melt(data_dead,id.vars=c('시점')) # 시점을 기준으로 각 국가별 데이터 재구성 ( 시점 / 국가 / 값 )
 colnames(data_dead)[2]<-'country' # 컬럼 이름 변경
 colnames(data_dead)[3]<-'dead_rate'
@@ -72,39 +63,84 @@ head(data_dead,150)
 data_1p_gdp <-data.frame(data_1p_gdp) # df로 변환
 #data_1p_gdp <- data_dead[c(1:15),] # 20년도까지만 추출
 data_1p_gdp <- melt(data_1p_gdp,id.vars=c('시점')) # 시점을 기준으로 각 국가별 데이터 재구성 ( 시점 / 국가 / 값 )
+
 colnames(data_1p_gdp)[2]<-'country' # 컬럼 이름 변경
 colnames(data_1p_gdp)[3]<-'data_1p_gdp'
 data_1p_gdp <- data_1p_gdp[data_1p_gdp$시점 %in% seq(1960,2020,5),]
 data_1p_gdp
 head(data_1p_gdp,150)
+row.names(data_1p_gdp)<-NULL
 
-# 데이터 합침
+# 데이터 통합------------------------------
+data_birth[3]
+data_dead[3]
+data_1p_gdp[3]
 
+data_bubble=cbind(data_birth,data_dead=data_dead[3],data_1p_gdp = data_1p_gdp[3])
+dim(data_bubble)
 
+# 대륙 컬럼 추가------------------------------
+data_bubble
+data_bubble$continent <-c('아시아')
+data_bubble[c(53:91),6] <-c('북아메리카')
+data_bubble[c(92:130),6] <-c('남아메리카')
+data_bubble[c(131:468),6] <-c('유럽')
+data_bubble[c(469:494),6] <-c('오세아니아')
 
+str(data_bubble)
+data_bubble$year <- as.integer(data_bubble$year)
 
-library(esquisse)
-esquisse::esquisser()
+# 시각화--------------------------------------------------------------
+# 전체 국가 1화면
+# Get data:
+library(gapminder)
 
-library(plotly)
-plot
-m %>%
-    plot_ly(x = ~ 시점,
-            y = ~ value,
-            name = ~ country,
-            hoverinfo = 'x + y + name')
-
-library(esquisse)
-esquisse::esquisser()
-
+# Charge libraries:
 library(ggplot2)
+#install.packages('gganimate')
+library(gganimate)
+str(data_bubble)
 
-p <-ggplot(data = m, aes(x = 시점, y = value, col = country)) + geom_line(aes(group=1)) 
-p
+library(gifski)
 
-m
-m %>%
-    plot_ly(x = ~ 시점,
-            y = ~ value,
-            name = ~ country,
-            hoverinfo = 'x + y + name ')
+# Make a ggplot, but add frame=year: one image per year
+
+myplot<-ggplot(data_bubble, aes(birth_rate,dead_rate, size = data_1p_gdp, color=continent))+
+  geom_point()+
+  #scale_x_log10() +
+  theme_bw()+
+  labs(title = 'Year: {frame_time}', x='birth', y = 'dead')+
+  transition_time(year) +
+  ease_aes('linear')
+
+animate(myplot, duration = 5, fps = 20, width = 500, height = 500, renderer = gifski_renderer())
+#anim_save("output.gif")
+
+#------------------------------------------------------------------------
+# 대륙별 5개
+# Get data:
+library(gapminder)
+
+# Charge libraries:
+library(ggplot2)
+library(gganimate)
+
+# Make a ggplot, but add frame=year: one image per year
+myplot2 <-ggplot(data_bubble, aes(birth_rate,dead_rate, size = data_1p_gdp, color=continent)) +
+  geom_point(alpha = 0.7, show.legend = TRUE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  facet_wrap(~continent) +
+  
+  # Here comes the gganimate specific bits
+  labs(title = 'Year: {frame_time}', x='birth', y = 'dead') +
+  transition_time(year) +
+  ease_aes('linear')
+
+animate(myplot2, duration = 5, fps = 20, width = 500, height = 500, renderer = gifski_renderer())
+
+# Save at gif:
+anim_save("271-ggplot2-animated-gif-chart-with-gganimate2.gif")
+
+
